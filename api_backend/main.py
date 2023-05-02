@@ -1,7 +1,8 @@
 from fastapi import FastAPI
+from schemas import Warehouse
 import uvicorn
-import sqlalchemy
-
+from sqlalchemy import Table,Column, create_engine, MetaData
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy import URL
 import os
 
@@ -19,12 +20,38 @@ url_object = URL.create(
     database=DATABASE,
 )
 
-engine=sqlalchemy.create_engine(url_object)
+
+#estalish connection
+app=FastAPI()
+engine=create_engine(url_object, echo=True)
+metadata= MetaData()
+Session=sessionmaker(bind=engine)
+session=Session()
 conn=engine.connect()
-metadata= sqlalchemy.MetaData()
-Users=sqlalchemy.Table("users",metadata,autoload_with=engine)
-smt=Users.select()
-op=conn.execute(smt)
 
 
+# get warehouses
+@app.get("/getWarehouses")
+def getWareHouses():
+    #warehouses=Table('warehouses',metadata,autoload_with=engine)
+    result=session.query(Warehouse).all()
+    return result
+    
+# get products
+@app.get("/getProducts")
+def getProducts():
+    products=Table('products',metadata,autoload_with=engine)
+    result=session.query(products)
+    data=[dict(row) for row in result]
+    return {"data":data}
 
+# get companies
+@app.get("/getCompanies")
+def getCompanies():
+    companies=Table('companies',metadata,autoload_with=engine)
+    result=session.query(companies)
+    return result
+
+if __name__=="__main__":
+    uvicorn.run(app,host="localhost",port=8089)
+    #getWareHouses()
