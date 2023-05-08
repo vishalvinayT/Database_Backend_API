@@ -34,7 +34,7 @@ class ProductsInfo(base):
 
 
 class Products(base):
-    __tablename__="products"
+    __tablename__=ProductsInfo.__table__
     id=Column("id",INTEGER, primary_key=True)
     companyId=Column("company_id",INTEGER)
     productName=Column("productName",VARCHAR)
