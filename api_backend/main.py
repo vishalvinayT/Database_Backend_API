@@ -1,5 +1,5 @@
 import random
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from schemas import Warehouse, Products, Companies, ProductsInfo
 import uvicorn
 import datetime
@@ -41,8 +41,8 @@ class ProductsCreate(BaseModel):
     expDate: Optional[str]
     quantity: int
     price: float
-    productImage: str
 
+    
 class CompaniesCreate(BaseModel):
     warehouseId: int
     companyName: str
@@ -95,23 +95,24 @@ def addWarehouse(warehouse: WarehouseCreate):
 def addCompany(company: CompaniesCreate):
     id=generateUniqueId("Company"+company.companyName)
     if(stringChecker(company.companyName, company.city,company.country, company.pincode,company.street)):
-        result=session.query(Warehouse).filter_by(Warehouse.id==company.warehouseId)
+        result=session.query(Warehouse).filter(Warehouse.id==company.warehouseId)
         if(result is not None):
-            newCompany=Companies(id,company.warehouseId,company.companyName,company.street,company.city,company.pincode,company.country)
+            newCompany=Companies(id=id,warehouseId=333278322,companyName="vishal",street="kaiser",city="aachen",country="Germany")
             session.add(newCompany)
             #session.commit()
             return company
     raise HTTPException(status_code=400, detail="Please enter valid Informaton")
 
 @app.post("/addProduct")
-def addProduct(product:ProductsCreate):
+def addProduct(product:ProductsCreate, productImage: UploadFile = File(...)):
     id=generateUniqueId("Product"+product.productName)
     if(stringChecker(product.productName) and product.price>0 and product.quantity>0):
         result=session.query(Companies).filter(Companies.id==product.companyId)
         if(result is not None):
-            image=processImage(product.productImage)
-            newCompany=Products(id,product.companyId,product.productName,product.description,product.mfdDate,product.expDate,product.quantity,product.price,image)
-            session.add(newCompany)
+            image=processImage(productImage)
+            print("Done")
+            newProduct=Products(id=id,companyId=product.companyId,productName=product.productName,description=product.description,mfdDate=product.mfdDate,expDate=product.expDate,quantity=product.quantity,price=product.price,image=image)
+            session.add(newProduct)
             #session.commit()
             return product
     raise HTTPException(status_code=400, detail="Please enter valid Informaton")
@@ -123,9 +124,8 @@ def generateUniqueId(value: str)->int:
     result=result *-1 if result<0 else result
     return result
 
-def processImage(image: str):
-    with open(image, "rb") as fp:
-        return fp.read()
+def processImage(file: UploadFile = File(...)):
+    return file.read()
 
 def stringChecker(*args)->bool:
     for value in args:
@@ -140,13 +140,13 @@ def queryDebug():
     if(stringChecker("vishal","aachen","kasier","aachen","Germany")):
         result=session.query(Warehouse).filter(Warehouse.id==333278322)
         if(result is not None):
-            newCompany=Companies(id,333278322,"vishal","aachen","kasier","aachen","Germany")
+            newCompany=Companies(id=id,warehouseId=333278322,companyName="vishal",street="kaiser",city="aachen",country="Germany")
             session.add(newCompany)
             #session.commit()
             return True
 
 
 if __name__=="__main__":
-    #uvicorn.run(app,host="localhost",port=8089)
-    queryDebug()
+    uvicorn.run(app,host="localhost",port=8089)
+    #queryDebug()
   
