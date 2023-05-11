@@ -1,10 +1,12 @@
 import random
-from fastapi import FastAPI, HTTPException, UploadFile, File
-from schemas import Warehouse, Products, Companies, ProductsInfo
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
+from schemas import Warehouse, Companies, ProductsInfo, Products
 import uvicorn
-import datetime
+from datetime import datetime
 from typing import Optional
 import re
+from PIL import Image
+from io import BytesIO
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import URL
@@ -34,14 +36,17 @@ class WarehouseCreate(BaseModel):
     country: str
 
 class ProductsCreate(BaseModel):
-    companyId: int
-    productName: str
-    description: str
+    companyId: Optional[int]
+    productName: Optional[str]
+    description: Optional[str]
     mfdDate: Optional[str]
     expDate: Optional[str]
-    quantity: int
-    price: float
+    quantity: Optional[int]
+    price: Optional[float]
 
+class Test(BaseModel):
+    value: int
+    model: str
     
 class CompaniesCreate(BaseModel):
     warehouseId: int
@@ -86,7 +91,7 @@ def addWarehouse(warehouse: WarehouseCreate):
     if(stringChecker(warehouse.warehouseName , warehouse.city , warehouse.country)):
         newWarehouse=Warehouse(id=id,warehouseName=warehouse.warehouseName, city=warehouse.city,country=warehouse.country)
         session.add(newWarehouse)
-        #session.commit()
+        session.commit()
         return warehouse
     raise HTTPException(status_code=400, detail="Please enter valid Informaton")
 
@@ -99,23 +104,25 @@ def addCompany(company: CompaniesCreate):
         if(result is not None):
             newCompany=Companies(id=id,warehouseId=333278322,companyName="vishal",street="kaiser",city="aachen",country="Germany")
             session.add(newCompany)
-            #session.commit()
+            session.commit()
             return company
     raise HTTPException(status_code=400, detail="Please enter valid Informaton")
 
 @app.post("/addProduct")
-def addProduct(product:ProductsCreate, productImage: UploadFile = File(...)):
+async def addProduct(product:ProductsCreate = Depends(), insertImage: UploadFile = File(...)):
     id=generateUniqueId("Product"+product.productName)
     if(stringChecker(product.productName) and product.price>0 and product.quantity>0):
         result=session.query(Companies).filter(Companies.id==product.companyId)
         if(result is not None):
-            image=processImage(productImage)
-            print("Done")
-            newProduct=Products(id=id,companyId=product.companyId,productName=product.productName,description=product.description,mfdDate=product.mfdDate,expDate=product.expDate,quantity=product.quantity,price=product.price,image=image)
+            image=await insertImage.read()
+            print(type(image))
+            newProduct=Products(id=id,companyId=product.companyId,productName=product.productName,description=product.description,mfdDate=formatDate(product.mfdDate),expDate=formatDate(product.expDate),quantity=product.quantity,price=product.price,productImage=image)
             session.add(newProduct)
-            #session.commit()
+            print("Done")
+            session.commit()
             return product
     raise HTTPException(status_code=400, detail="Please enter valid Informaton")
+
 
 
 def generateUniqueId(value: str)->int:
@@ -124,8 +131,14 @@ def generateUniqueId(value: str)->int:
     result=result *-1 if result<0 else result
     return result
 
-def processImage(file: UploadFile = File(...)):
-    return file.read()
+def formatDate(strDate:str):
+    print(strDate)
+    return datetime.strptime(strDate,'%d-%m-%y')
+async def processImage(file: UploadFile = File(...)):
+    a=  await file.read()
+    im=bytearray(a)
+    pil_image = Image.open(BytesIO(im))
+    return pil_image
 
 def stringChecker(*args)->bool:
     for value in args:
