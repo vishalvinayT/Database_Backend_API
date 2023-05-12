@@ -5,14 +5,16 @@ import uvicorn
 from datetime import datetime
 from typing import Optional
 import re
-from PIL import Image
-from io import BytesIO
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import URL
 from pydantic import BaseModel
 import os
 
+"""todo: implement crud operations
+        create  logging 
+        return Orjsonreponses
+        deploy in a container """
 MAX_SHORT=65535
 PRIME=37
 DRIVER= "mysql"
@@ -38,9 +40,9 @@ class WarehouseCreate(BaseModel):
 class ProductsCreate(BaseModel):
     companyId: Optional[int]
     productName: Optional[str]
-    description: Optional[str]
+    description: Optional[str] = None
     mfdDate: Optional[str]
-    expDate: Optional[str]
+    expDate: Optional[str] = None
     quantity: Optional[int]
     price: Optional[float]
 
@@ -51,9 +53,9 @@ class Test(BaseModel):
 class CompaniesCreate(BaseModel):
     warehouseId: int
     companyName: str
-    street: str
-    city: str
-    pincode: str
+    street: str = None
+    city: str = None
+    pincode: str= None
     country: str
 
 
@@ -118,11 +120,22 @@ async def addProduct(product:ProductsCreate = Depends(), insertImage: UploadFile
             print(type(image))
             newProduct=Products(id=id,companyId=product.companyId,productName=product.productName,description=product.description,mfdDate=formatDate(product.mfdDate),expDate=formatDate(product.expDate),quantity=product.quantity,price=product.price,productImage=image)
             session.add(newProduct)
-            print("Done")
             session.commit()
             return product
     raise HTTPException(status_code=400, detail="Please enter valid Informaton")
 
+@app.put("/putProduct/{productName}")
+async def putProdutInfo(productName: str,description: str, image: UploadFile= File(...)):
+    image=await image.read()
+    session.query(Products).filter(Products.productName==productName).update(dict(description=description,productImage=image))
+    session.commit()
+    return {"message":"ok"}
+
+@app.put("/putCompany/{companyName}")
+def putCompanyInfo(companyName: str, company: CompaniesCreate):
+    session.query(Companies).filter(Companies.companyName==companyName).update(dict(street=company.street,city=company.city,pincode=company.pincode))
+    session.commit()
+    return {"message":"ok"}
 
 
 def generateUniqueId(value: str)->int:
@@ -134,11 +147,6 @@ def generateUniqueId(value: str)->int:
 def formatDate(strDate:str):
     print(strDate)
     return datetime.strptime(strDate,'%d-%m-%y')
-async def processImage(file: UploadFile = File(...)):
-    a=  await file.read()
-    im=bytearray(a)
-    pil_image = Image.open(BytesIO(im))
-    return pil_image
 
 def stringChecker(*args)->bool:
     for value in args:
