@@ -1,11 +1,11 @@
 import random
 from fastapi.responses import ORJSONResponse
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
+from fastapi import FastAPI, UploadFile, File, Depends
 from schemas import Warehouse, Companies, ProductsInfo, Products
 import uvicorn
 from datetime import datetime
 from typing import Optional
-from copy import deepcopy, copy
+from copy import copy
 import re
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.orm import sessionmaker
@@ -17,6 +17,7 @@ import os
         create  logging 
         return Orjsonreponses
         deploy in a container """
+
 MAX_SHORT=65535
 PRIME=37
 DRIVER= "mysql"
@@ -138,15 +139,21 @@ async def addProduct(product:ProductsCreate = Depends(), insertImage: UploadFile
 @app.put("/putProduct/{productName}")
 async def putProdutInfo(productName: str,description: str, image: UploadFile= File(...)):
     image=await image.read()
-    session.query(Products).filter(Products.productName==productName).update(dict(description=description,productImage=image))
-    session.commit()
-    return {"message":"ok"}
+    result=session.query(Products).filter(Products.productName==productName)
+    if(bool(result.one())):
+        result.update(dict(description=description,productImage=image))
+        session.commit()
+        return ORJSONResponse({"message":"Added data"}, status_code=201)
+    return ORJSONResponse({"message":"Invalid informatation"}, status_code=400)
 
 @app.put("/putCompany/{companyName}")
 def putCompanyInfo(companyName: str, company: CompaniesCreate):
-    session.query(Companies).filter(Companies.companyName==companyName).update(dict(street=company.street,city=company.city,pincode=company.pincode))
-    session.commit()
-    return {"message":"ok"}
+    result=session.query(Companies).filter(Companies.companyName==companyName)
+    if(bool(result.one())):
+        result.update(dict(street=company.street,city=company.city,pincode=company.pincode))
+        session.commit()
+        return ORJSONResponse({"message":"Added data"}, status_code=201)
+    return ORJSONResponse({"message":"Invalid informatation"}, status_code=400)
 
 
 @app.get("/searchByCompanies")
@@ -164,23 +171,33 @@ def findProduct(productName: str):
         return res
     return ORJSONResponse({"message":"Bad Request"}, status_code=400)
 
+
 @app.delete("/deleteCompany/{companyName}")
 def deleteCompany(companyName: str):
-    session.query(Companies).filter(Companies.companyName==companyName).delete(synchronize_session=False)
-    session.commit()
-    return {"message":"ok"}
+    result=session.query(Companies).filter(Companies.companyName==companyName)
+    if(bool(result.one())):
+        result.delete(synchronize_session=False)
+        session.commit()
+        return ORJSONResponse({"message":"Added data"}, status_code=201)
+    return ORJSONResponse({"message":"Invalid informatation"}, status_code=400)
 
 @app.delete("/deleteProduct/{productName}")
 def deleteCompany(productName: str):
-    session.query(Products).filter(Products.productName==productName).delete(synchronize_session=False)
-    session.commit()
-    return {"message":"ok"}
+    result=session.query(Products).filter(Products.productName==productName)
+    if(bool(result.one())):
+        result.delete(synchronize_session=False)
+        session.commit()
+        return ORJSONResponse({"message":"Added data"}, status_code=201)
+    return ORJSONResponse({"message":"Invalid informatation"}, status_code=400)
 
 @app.delete("/deleteWarehouse/{warehouseName}")
 def deleteCompany(warehouseName: str):
-    session.query(Warehouse).filter(Warehouse.warehouseName==warehouseName).delete(synchronize_session=False)
-    session.commit()
-    return {"message":"ok"}
+    result=session.query(Warehouse).filter(Warehouse.warehouseName==warehouseName)
+    if(bool(result.one())):
+        result.delete(synchronize_session=False)
+        session.commit()
+        return ORJSONResponse({"message":"Added data"}, status_code=201)
+    return ORJSONResponse({"message":"Invalid informatation"}, status_code=400)
 
 
 ## Validators ##
@@ -203,7 +220,6 @@ def stringChecker(*args)->bool:
 
 
 def queryDebug():
-    from copy import copy
     ## test function to debug ##
     res=session.query(Companies).filter(Companies.companyName=="ahdkjdbh")
     copyRes=copy(res)
