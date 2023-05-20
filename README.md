@@ -1,3 +1,7 @@
 # Database_Backend_API
 
-The main goal of this project is to create an web-api which acts as an interface between the user and database where user can perform CRUD operations on database of the ProductManagementSystem. The api is built using the python framework(FastAPI, SQLalchemy) and this application on the docker container.
+* Creation of web-api interface between user and database
+* Creation of interface to perform CRUD operations on the DB
+* Built the backend using python frameworks(FastAPI, SQLalchemy)
+* Logging of the requests and responses
+* Deployment of the application on a docker container
