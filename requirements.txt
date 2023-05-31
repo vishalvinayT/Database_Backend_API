@@ -1,5 +1,0 @@
-FastApi
-uvicorn
-sqlalchemy
-orjson
-python-multipart

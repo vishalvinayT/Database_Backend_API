@@ -1,6 +1,6 @@
 import random
 from fastapi.responses import ORJSONResponse
-from fastapi import FastAPI, UploadFile, File, Depends, Request, status
+from fastapi import FastAPI, UploadFile, File, Depends, Request, status,HTTPException
 from schemas import Warehouse, Companies, ProductsInfo, Products
 import uvicorn
 from datetime import datetime
@@ -10,7 +10,7 @@ from logConfig import LogConfig
 import logging
 from copy import copy
 import re
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, MetaData,exc
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import URL
 from pydantic import BaseModel
@@ -74,15 +74,16 @@ logConfig=LogConfig()
 dictConfig(logConfig.dict())
 logger=logging.getLogger(logConfig.LOGGER_NAME)
 
-
-
 #estalish connection
 app=FastAPI()
 engine=create_engine(url_object, echo=True)
 metadata= MetaData()
 Session=sessionmaker(bind=engine)
-session=Session()
+session=Session()  
+print("Connecting...to {}@{}".format(USERNAME,HOST))
 conn=engine.connect()
+
+
 
 # get warehouses
 @app.get("/getWarehouses")
@@ -281,6 +282,6 @@ def queryDebug():
 
 
 if __name__=="__main__":
-    uvicorn.run(app,host="localhost",port=8089)
+    uvicorn.run(app,host="0.0.0.0",port=8093)
     #queryDebug()
   

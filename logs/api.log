@@ -2415,3 +2415,59 @@ WHERE warehouses.`warehouseName` = %s
 [32mINFO[0m:     | 2023-05-20 16:43:38 | [generated in 0.00079s] ('testWarehouse',)
 [32mINFO[0m:     | 2023-05-20 16:43:38 | COMMIT
 [32mINFO[0m:     | 2023-05-20 16:43:38 |  "DELETE /deleteWarehouse/testWarehouse 1.1 " 200
+[32mINFO[0m:     | 2023-05-27 13:22:33 | SELECT DATABASE()
+[32mINFO[0m:     | 2023-05-27 13:22:33 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-27 13:22:33 | SELECT @@sql_mode
+[32mINFO[0m:     | 2023-05-27 13:22:33 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-27 13:22:33 | SELECT @@lower_case_table_names
+[32mINFO[0m:     | 2023-05-27 13:22:33 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Started server process [[36m52492[0m]
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Waiting for application startup.
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Application startup complete.
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Uvicorn running on [1mhttp://localhost:8089[0m (Press CTRL+C to quit)
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Shutting down
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Waiting for application shutdown.
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Application shutdown complete.
+[32mINFO[0m:     | 2023-05-27 13:22:33 | Finished server process [[36m52492[0m]
+[32mINFO[0m:     | 2023-05-27 13:34:12 | SELECT DATABASE()
+[32mINFO[0m:     | 2023-05-27 13:34:12 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-27 13:34:12 | SELECT @@sql_mode
+[32mINFO[0m:     | 2023-05-27 13:34:12 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-27 13:34:12 | SELECT @@lower_case_table_names
+[32mINFO[0m:     | 2023-05-27 13:34:12 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-27 13:34:12 | Started server process [[36m139328[0m]
+[32mINFO[0m:     | 2023-05-27 13:34:12 | Waiting for application startup.
+[32mINFO[0m:     | 2023-05-27 13:34:12 | Application startup complete.
+[32mINFO[0m:     | 2023-05-27 13:34:12 | Uvicorn running on [1mhttp://localhost:8089[0m (Press CTRL+C to quit)
+[32mINFO[0m:     | 2023-05-27 13:36:19 | Shutting down
+[32mINFO[0m:     | 2023-05-27 13:36:19 | Waiting for application shutdown.
+[32mINFO[0m:     | 2023-05-27 13:36:19 | Application shutdown complete.
+[32mINFO[0m:     | 2023-05-27 13:36:19 | Finished server process [[36m139328[0m]
+[32mINFO[0m:     | 2023-05-31 20:39:06 | SELECT DATABASE()
+[32mINFO[0m:     | 2023-05-31 20:39:06 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-31 20:39:06 | SELECT @@sql_mode
+[32mINFO[0m:     | 2023-05-31 20:39:06 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-31 20:39:06 | SELECT @@lower_case_table_names
+[32mINFO[0m:     | 2023-05-31 20:39:06 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-31 20:39:06 | Started server process [[36m29588[0m]
+[32mINFO[0m:     | 2023-05-31 20:39:06 | Waiting for application startup.
+[32mINFO[0m:     | 2023-05-31 20:39:06 | Application startup complete.
+[32mINFO[0m:     | 2023-05-31 20:39:06 | Uvicorn running on [1mhttp://localhost:8091[0m (Press CTRL+C to quit)
+[32mINFO[0m:     | 2023-05-31 20:39:42 | Shutting down
+[32mINFO[0m:     | 2023-05-31 20:39:42 | Waiting for application shutdown.
+[32mINFO[0m:     | 2023-05-31 20:39:42 | Application shutdown complete.
+[32mINFO[0m:     | 2023-05-31 20:39:42 | Finished server process [[36m29588[0m]
+[32mINFO[0m:     | 2023-05-31 20:55:16 | SELECT DATABASE()
+[32mINFO[0m:     | 2023-05-31 20:55:16 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-31 20:55:16 | SELECT @@sql_mode
+[32mINFO[0m:     | 2023-05-31 20:55:16 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-31 20:55:16 | SELECT @@lower_case_table_names
+[32mINFO[0m:     | 2023-05-31 20:55:16 | [raw sql] ()
+[32mINFO[0m:     | 2023-05-31 20:55:16 | Started server process [[36m82408[0m]
+[32mINFO[0m:     | 2023-05-31 20:55:16 | Waiting for application startup.
+[32mINFO[0m:     | 2023-05-31 20:55:16 | Application startup complete.
+[32mINFO[0m:     | 2023-05-31 20:55:16 | Uvicorn running on [1mhttp://0.0.0.0:8091[0m (Press CTRL+C to quit)
+[32mINFO[0m:     | 2023-05-31 20:55:44 | Shutting down
+[32mINFO[0m:     | 2023-05-31 20:55:44 | Waiting for application shutdown.
+[32mINFO[0m:     | 2023-05-31 20:55:44 | Application shutdown complete.
+[32mINFO[0m:     | 2023-05-31 20:55:44 | Finished server process [[36m82408[0m]
